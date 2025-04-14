@@ -1,18 +1,22 @@
-import openai
 from flask import Flask, request, jsonify
+import os
+import openai
 
 app = Flask(__name__)
-
-openai.api_key = "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"
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 @app.route("/ask", methods=["POST"])
 def ask():
-    prompt = request.json["prompt"]
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return jsonify({"response": response.choices[0].message.content})
+    data = request.get_json()
+    prompt = data.get("prompt", "")
+    if not prompt:
+        return jsonify({"error": "No prompt provided"}), 400
 
-if __name__ == "__main__":
-    app.run(debug=True)
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return jsonify({"response": response.choices[0].message.content})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
