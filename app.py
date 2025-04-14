@@ -9,6 +9,7 @@ openai.api_key = os.environ.get("OPENAI_API_KEY")
 def ask():
     data = request.get_json()
     prompt = data.get("prompt", "")
+
     if not prompt:
         return jsonify({"error": "No prompt provided"}), 400
 
