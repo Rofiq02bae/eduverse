@@ -1,11 +1,11 @@
+from openai import OpenAI
 from flask import Flask, request, jsonify
 import os
-import openai
 
 app = Flask(__name__)
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-@app.route("/", methods=["POST"])
+@app.route("/ask", methods=["POST"])
 def ask():
     data = request.get_json()
     prompt = data.get("prompt", "")
@@ -14,7 +14,7 @@ def ask():
         return jsonify({"error": "No prompt provided"}), 400
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4o",
             messages=[{"role": "user", "content": prompt}]
         )
