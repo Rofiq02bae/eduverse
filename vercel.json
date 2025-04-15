@@ -1,14 +1,9 @@
- {
-     "builds": [
-         {
-             "src": "app.py",
-             "use": "@vercel/python"
-         }
-     ],
-     "routes": [
-         {
-             "src": "/(.*)",
-             "dest": "app.py"
-         }
-     ]
- }
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/ask.py", "use": "@vercel/python" }
+  ],
+  "routes": [
+    { "src": "/ask", "dest": "api/ask.py" }
+  ]
+}
