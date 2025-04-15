@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "src": "/ask", "dest": "api/ask.py" }
+    { "source": "/(.*)", "destination": "api/ask.py" }
   ]
 }
