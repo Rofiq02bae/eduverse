@@ -1,23 +1,20 @@
-from openai import OpenAI
 from flask import Flask, request, jsonify
+import google.generativeai as genai
 import os
 
 app = Flask(__name__)
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+model = genai.GenerativeModel("gemini-pro")
 
-@app.route("/ask", methods=["POST"])
+@app.route("/", methods=["POST"])
 def ask():
     data = request.get_json()
     prompt = data.get("prompt", "")
-
     if not prompt:
-        return jsonify({"error": "No prompt provided"}), 400
+        return jsonify({"error": "Prompt kosong"}), 400
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return jsonify({"response": response.choices[0].message.content})
+        response = model.generate_content(prompt)
+        return jsonify({"response": response.text})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
